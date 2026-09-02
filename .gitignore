@@ -1,0 +1,19 @@
+# 临时与系统文件
+~$*
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# 敏感与私有配置（绝不提交）
+.env
+.env.local
+*.key
+*.pem
+
+# 编程临时产物（如后续放代码）
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+dist/
