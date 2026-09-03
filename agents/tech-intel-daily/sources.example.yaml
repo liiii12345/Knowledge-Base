@@ -1,0 +1,21 @@
+# 信源配置示例
+# 使用方式：复制为 sources.yaml 后填自己的信源（sources.yaml 已在 .gitignore 中，不会误提交）
+# 格式约束：只支持下面的平铺列表写法（解析器是手写的轻量实现，不支持嵌套 YAML）
+
+sources:
+  - name: 示例科技媒体 A
+    url: https://example.com/feed
+    tags: [ai-model, ai-app]
+
+  - name: 示例开发者博客 B
+    url: https://example.org/rss
+    tags: [dev-tool, ai-infra]
+
+  - name: 示例安全公告 C
+    url: https://example.net/security/atom.xml
+    tags: [ai-infra, dev-tool]
+
+# 选源的三条原则：
+#   1. 宁少而精：20 个低质信源产生的噪音，需要人工花 1 小时清理
+#   2. 官方优先：发布方自己的博客 / changelog 可信度高于二手转述
+#   3. 定期淘汰：连续一周没有产生 P0/P1 条目的信源，直接删掉
