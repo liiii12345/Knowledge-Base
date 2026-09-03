@@ -1,0 +1,7 @@
+# 你自己的信源清单、运行产物不入库
+sources.yaml
+data/
+output/
+__pycache__/
+*.pyc
+.env
