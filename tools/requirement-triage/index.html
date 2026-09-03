@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>需求拆解工作台 · Requirement Triage</title>
+<style>
+  :root{
+    --blue-900:#042C53; --blue-800:#0C447C; --blue-600:#185FA5; --blue-400:#378ADD;
+    --blue-100:#B5D4F4; --blue-50:#E6F1FB;
+    --teal-800:#085041; --teal-600:#0F6E56; --teal-100:#9FE1CB; --teal-50:#E1F5EE;
+    --amber-800:#633806; --amber-600:#854F0B; --amber-100:#FAC775; --amber-50:#FAEEDA;
+    --gray-900:#2C2C2A; --gray-600:#5F5E5A; --gray-400:#888780; --gray-200:#D3D1C7; --gray-100:#F1EFE8;
+    --bg:#FFFFFF; --surface:#F7F9FC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:0; background:var(--bg); color:var(--gray-900);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:14px; line-height:1.6;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:28px 24px 64px;}
+  header{border-bottom:2px solid var(--blue-600); padding-bottom:14px; margin-bottom:8px;}
+  h1{font-size:22px; font-weight:600; margin:0 0 6px; color:var(--blue-900);}
+  .sub{color:var(--gray-600); font-size:13px;}
+  .badge{display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; margin-left:6px; vertical-align:2px;}
+  .b-blue{background:var(--blue-100); color:var(--blue-800);}
+  .b-teal{background:var(--teal-100); color:var(--teal-800);}
+  .b-amber{background:var(--amber-100); color:var(--amber-800);}
+  .b-gray{background:var(--gray-100); color:var(--gray-600);}
+
+  section{margin-top:28px;}
+  h2{font-size:16px; font-weight:600; color:var(--blue-900); margin:0 0 4px; padding-left:10px; border-left:4px solid var(--blue-600);}
+  .hint{color:var(--gray-600); font-size:12.5px; margin:0 0 12px 14px;}
+
+  .card{background:var(--surface); border:1px solid var(--gray-200); border-radius:10px; padding:16px;}
+  textarea{
+    width:100%; min-height:120px; border:1px solid var(--gray-200); border-radius:8px;
+    padding:10px 12px; font-size:13px; font-family:inherit; line-height:1.7; resize:vertical; background:#fff;
+  }
+  textarea:focus{outline:none; border-color:var(--blue-400);}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px;}
+  button{
+    border:1px solid var(--blue-600); background:var(--blue-600); color:#fff; border-radius:8px;
+    padding:8px 16px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  button:hover{background:var(--blue-800); border-color:var(--blue-800);}
+  button.ghost{background:#fff; color:var(--blue-600);}
+  button.ghost:hover{background:var(--blue-50);}
+  button.sm{padding:5px 12px; font-size:12.5px;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px; background:#fff;}
+  th,td{border:1px solid var(--gray-200); padding:7px 10px; text-align:left; vertical-align:middle;}
+  th{background:var(--blue-50); color:var(--blue-800); font-weight:600; white-space:nowrap;}
+  td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  tbody tr:nth-child(even){background:#FCFDFE;}
+
+  .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;}
+  .kpi{background:#fff; border:1px solid var(--gray-200); border-radius:10px; padding:14px 16px;}
+  .kpi .label{font-size:12.5px; color:var(--gray-600);}
+  .kpi .value{font-size:26px; font-weight:600; color:var(--blue-800); line-height:1.25; font-variant-numeric:tabular-nums;}
+  .kpi .value.warn{color:var(--amber-600);}
+  .kpi .note{font-size:12px; color:var(--gray-600);}
+
+  .bar{height:9px; background:var(--gray-100); border-radius:999px; overflow:hidden; min-width:90px;}
+  .bar > i{display:block; height:100%; background:var(--blue-600);}
+  .bar.t > i{background:var(--teal-600);}
+  .bar.a > i{background:var(--amber-600);}
+
+  select{border:1px solid var(--gray-200); border-radius:6px; padding:3px 6px; font-size:12.5px; font-family:inherit; background:#fff;}
+  select:focus{outline:none; border-color:var(--blue-400);}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:900px){ .grid2{grid-template-columns:1fr;} }
+  .concl{background:var(--blue-50); border:1px solid var(--blue-100); border-radius:10px; padding:14px 16px; margin-top:14px;}
+  .concl strong{color:var(--blue-900);}
+  .concl ul{margin:6px 0 0; padding-left:20px;}
+  .concl li{margin:3px 0; font-size:13px;}
+  footer{margin-top:36px; padding-top:14px; border-top:1px solid var(--gray-200); color:var(--gray-600); font-size:12.5px;}
+  .empty{color:var(--gray-400); text-align:center; padding:22px; font-size:13px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>需求拆解工作台 <span class="badge b-gray">Requirement Triage</span></h1>
+  <div class="sub">把一堆零散业务诉求，收敛成"先验证哪一块"的结论。纯前端单文件，离线可用，数据只在本机。</div>
+</header>
+
+<section>
+  <h2>1 · 输入需求清单</h2>
+  <p class="hint">每行一条。支持 <code>需求描述,部门,频次</code> 格式（逗号或 Tab 分隔）；只写描述也可以。</p>
+  <div class="card">
+    <textarea id="raw" placeholder="示例：&#10;把上月的费用报表自动汇总成台账,财务,高&#10;问报销制度里差旅标准怎么定,财务,高&#10;扫描件里的发票信息自动识别入库,财务,中"></textarea>
+    <div class="row">
+      <button onclick="parseInput()">解析并打标签</button>
+      <button class="ghost" onclick="loadSample()">载入示例数据（41 条脱敏需求）</button>
+      <button class="ghost" onclick="clearAll()">清空</button>
+      <span class="sub" id="parseStat"></span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>2 · 分布统计</h2>
+  <p class="hint">先聚类再谈优先级——颗粒度不齐的清单没法比较。</p>
+  <div id="stats"><div class="card empty">还没有数据。点上面「载入示例数据」或直接粘贴需求清单。</div></div>
+</section>
+
+<section>
+  <h2>3 · 需求台账</h2>
+  <p class="hint">类型标签可以逐条人工修正——规则引擎只负责初筛，判断在人手里。</p>
+  <div class="card" style="padding:0; overflow:auto; max-height:460px;">
+    <table id="ledger"><tbody><tr><td class="empty">暂无数据</td></tr></tbody></table>
+  </div>
+</section>
+
+<section>
+  <h2>4 · 验证域评估</h2>
+  <p class="hint">不是选最响的，是选最能说明问题的。四个维度各打 1-5 分。</p>
+  <div class="card">
+    <table id="domains">
+      <thead>
+        <tr>
+          <th>候选域</th><th>需求密度</th><th>流程封闭度</th><th>数据可得性</th><th>改动成本</th>
+          <th class="num">总分</th><th>建议</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="domainRows"></tbody>
+    </table>
+    <div class="row">
+      <input id="newDomain" placeholder="输入候选域名称，如：财务" style="border:1px solid var(--gray-200); border-radius:8px; padding:7px 10px; font-size:13px; min-width:220px;" onkeydown="if(event.key==='Enter')addDomain()">
+      <button class="sm" onclick="addDomain()">添加候选域</button>
+      <button class="ghost sm" onclick="resetDomains()">重置为默认两域</button>
+    </div>
+    <div id="domainConcl"></div>
+  </div>
+</section>
+
+<section>
+  <h2>5 · 导出</h2>
+  <p class="hint">导出的东西才是能拿去评审和汇报的产出物。</p>
+  <div class="row">
+    <button class="ghost" onclick="exportCSV()">导出需求台账 CSV</button>
+    <button class="ghost" onclick="exportMD()">导出分析报告 Markdown</button>
+    <button class="ghost" onclick="exportJSON()">导出 JSON</button>
+  </div>
+</section>
+
+<footer>
+  方法论见仓库 <code>docs/01-需求拆解与场景验证/</code>。这个工具是那套方法论的可执行版本：<b>拆需求 → 看分布 → 定验证域 → 明确暂缓项</b>。<br>
+  单文件、无依赖、无网络请求；所有数据只存在当前浏览器标签页，刷新即清空。
+</footer>
+
+</div>
+
+<script>
+var TYPES = ["问答型","处理型","生产型","协作型","管理型"];
+
+var RULES = [
+  {type:"处理型", cap:"OCR/解析", kw:["扫描","OCR","识别","发票","证件","图片","拍照","pdf","PDF","表格解析","抽取","结构化"]},
+  {type:"处理型", cap:"问数/计算", kw:["报表","汇总","统计","算","问数","台账","对账","核算","口径","指标","计算"]},
+  {type:"生产型", cap:"生成/模板", kw:["生成","起草","撰写","模板","套用","报告","纪要","摘要","总结","批量","一键"]},
+  {type:"协作型", cap:"协作/流程", kw:["共享","协作","审批","任务","跟进","对齐","会签","流转","指派","进度","通知","催办"]},
+  {type:"管理型", cap:"权限/配置", kw:["权限","角色","后台","配置","管理","账号","审计","日志","分组","成员"]},
+  {type:"问答型", cap:"检索/问答", kw:["查","找","问","怎么","如何","什么","制度","流程","规定","搜索","检索","在哪","哪里"]}
+];
+
+var DEPTS = ["财务","招采","人力","法务","行政","IT","运营","市场"];
+var FREQS = ["高","中","低"];
+
+var state = {rows:[], domains:[]};
+
+function classify(text){
+  var best = null, bestHits = 0;
+  for (var i=0;i<RULES.length;i++){
+    var r = RULES[i], hits = 0;
+    for (var j=0;j<r.kw.length;j++){
+      if (text.indexOf(r.kw[j]) !== -1) hits++;
+    }
+    if (hits > bestHits){ bestHits = hits; best = r; }
+  }
+  if (!best){
+    // 长句倾向协作/生产，短句倾向问答
+    if (text.length > 26) return {type:"协作型", cap:"协作/流程", hits:0};
+    return {type:"问答型", cap:"检索/问答", hits:0};
+  }
+  return {type:best.type, cap:best.cap, hits:bestHits};
+}
+
+function needOrchestration(row){
+  return row.type !== "问答型";
+}
+
+function parseInput(){
+  var raw = document.getElementById("raw").value;
+  var lines = raw.split(/\r?\n/).map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+  if (!lines.length){ alert("请先粘贴需求清单，或点「载入示例数据」"); return; }
+  state.rows = lines.map(function(line, idx){
+    var parts = line.split(/[,\t，]/).map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+    var text = parts[0] || line;
+    var dept = parts[1] && DEPTS.indexOf(parts[1])!==-1 ? parts[1] : guessDept(text);
+    var freq = parts[2] && FREQS.indexOf(parts[2])!==-1 ? parts[2] : "中";
+    var c = classify(text);
+    return {id:idx+1, text:text, dept:dept, freq:freq, type:c.type, cap:c.cap, hits:c.hits};
+  });
+  document.getElementById("parseStat").textContent = "已解析 " + state.rows.length + " 条需求";
+  renderAll();
+}
+
+function guessDept(text){
+  var map = [["财务","报销|费用|账|发票|预算|核算|资金"],["招采","采购|招标|供应商|比价|合同"],["人力","招聘|入职|考勤|绩效|培训|员工"],["法务","合同|法务|合规|诉讼|条款"],["IT","系统|权限|账号|接口|运维|故障"],["行政","会议室|用车|办公|印章|资产"],["运营","活动|运营|推广|内容|数据"],["市场","客户|线索|品牌|市场|竞品"]];
+  for (var i=0;i<map.length;i++){
+    var re = new RegExp(map[i][1]);
+    if (re.test(text)) return map[i][0];
+  }
+  return "未标注";
+}
+
+function clearAll(){
+  document.getElementById("raw").value = "";
+  state.rows = [];
+  document.getElementById("parseStat").textContent = "";
+  renderAll();
+}
+
+function loadSample(){
+  state.rows = SAMPLE.map(function(r, i){
+    var c = classify(r[0]);
+    return {id:i+1, text:r[0], dept:r[1], freq:r[2], type:c.type, cap:c.cap, hits:c.hits};
+  });
+  document.getElementById("raw").value = SAMPLE.map(function(r){return r.join(",");}).join("\n");
+  document.getElementById("parseStat").textContent = "已载入示例数据 " + state.rows.length + " 条";
+  renderAll();
+}
+
+function countBy(key){
+  var m = {};
+  state.rows.forEach(function(r){ var k = r[key]; m[k] = (m[k]||0)+1; });
+  return m;
+}
+
+function renderAll(){ renderStats(); renderLedger(); renderDomains(); }
+
+function renderStats(){
+  var el = document.getElementById("stats");
+  if (!state.rows.length){ el.innerHTML = '<div class="card empty">还没有数据。点上面「载入示例数据」或直接粘贴需求清单。</div>'; return; }
+  var n = state.rows.length;
+  var typeMap = countBy("type"), capMap = countBy("cap"), deptMap = countBy("dept");
+  var qa = state.rows.filter(function(r){return r.type==="问答型";}).length;
+  var orch = n - qa;
+  var qaPct = (qa/n*100).toFixed(1), orchPct = (orch/n*100).toFixed(1);
+  var highFreq = state.rows.filter(function(r){return r.freq==="高";}).length;
+
+  var h = '<div class="kpis">';
+  h += kpi("需求总数", n, "条");
+  h += kpi("纯问答型占比", qaPct + '%', qa + " / " + n + " 条", false);
+  h += kpi("需要能力编排占比", orchPct + '%', orch + " / " + n + " 条 · 光有聊天框解决不了", true);
+  h += kpi("高频诉求", highFreq, "条标记为高频");
+  h += '</div>';
+
+  h += '<div class="grid2" style="margin-top:14px;">';
+  h += '<div class="card"><div style="font-weight:600;color:var(--blue-900);margin-bottom:8px;">需求类型分布</div>' + bars(typeMap, n, "") + '</div>';
+  h += '<div class="card"><div style="font-weight:600;color:var(--blue-900);margin-bottom:8px;">能力依赖分布</div>' + bars(capMap, n, "t") + '</div>';
+  h += '</div>';
+
+  var depts = Object.keys(deptMap).sort(function(a,b){return deptMap[b]-deptMap[a];});
+  h += '<div class="card" style="margin-top:14px;"><div style="font-weight:600;color:var(--blue-900);margin-bottom:8px;">部门 × 类型交叉</div>';
+  h += '<table><thead><tr><th>部门</th><th class="num">总数</th>';
+  TYPES.forEach(function(t){ h += '<th class="num">' + t + '</th>'; });
+  h += '<th class="num">需编排</th></tr></thead><tbody>';
+  depts.forEach(function(d){
+    var sub = state.rows.filter(function(r){return r.dept===d;});
+    var o = sub.filter(needOrchestration).length;
+    h += '<tr><td>' + d + '</td><td class="num">' + sub.length + '</td>';
+    TYPES.forEach(function(t){
+      var c = sub.filter(function(r){return r.type===t;}).length;
+      h += '<td class="num">' + (c? c : '-') + '</td>';
+    });
+    h += '<td class="num"><b>' + o + '</b></td></tr>';
+  });
+  h += '</tbody></table></div>';
+
+  var topDept = depts[0];
+  h += '<div class="concl"><strong>从分布能读出什么</strong><ul>';
+  h += '<li>纯问答 <b>' + qaPct + '%</b> vs 需要能力编排 <b>' + orchPct + '%</b> —— 若后者过半，产品定位就不是"问答工具"，而是"内容底座 + 能力编排"。这个数字决定后面所有取舍。</li>';
+  var topCap = Object.keys(capMap).sort(function(a,b){return capMap[b]-capMap[a];})[0];
+  h += '<li>能力依赖集中在 <b>' + topCap + '</b>（' + capMap[topCap] + ' 条）——这是必须优先建设的能力项，不是可选项。</li>';
+  h += '<li>需求最密的部门是 <b>' + topDept + '</b>（' + deptMap[topDept] + ' 条）——它是验证域的第一候选，但还要看流程是否封闭、改动是否便宜。</li>';
+  h += '</ul></div>';
+  el.innerHTML = h;
+}
+
+function kpi(label, value, note, warn){
+  return '<div class="kpi"><div class="label">' + label + '</div><div class="value' + (warn?' warn':'') + '">' + value + '</div><div class="note">' + note + '</div></div>';
+}
+
+function bars(map, total, cls){
+  var keys = Object.keys(map).sort(function(a,b){return map[b]-map[a];});
+  var h = '<table><thead><tr><th>分类</th><th class="num">数量</th><th class="num">占比</th><th style="width:38%"></th></tr></thead><tbody>';
+  keys.forEach(function(k){
+    var c = map[k], pct = (c/total*100);
+    h += '<tr><td>' + k + '</td><td class="num">' + c + '</td><td class="num">' + pct.toFixed(1) + '%</td>';
+    h += '<td><div class="bar ' + cls + '"><i style="width:' + pct.toFixed(1) + '%"></i></div></td></tr>';
+  });
+  h += '</tbody></table>';
+  return h;
+}
+
+function renderLedger(){
+  var t = document.getElementById("ledger");
+  if (!state.rows.length){ t.innerHTML = '<tbody><tr><td class="empty">暂无数据</td></tr></tbody>'; return; }
+  var h = '<thead><tr><th style="width:38px">#</th><th>需求描述</th><th>部门</th><th>类型</th><th>依赖能力</th><th>频次</th><th>需能力编排</th></tr></thead><tbody>';
+  state.rows.forEach(function(r, i){
+    var opts = TYPES.map(function(tp){ return '<option value="' + tp + '"' + (tp===r.type?' selected':'') + '>' + tp + '</option>'; }).join('');
+    var fopts = FREQS.map(function(f){ return '<option value="' + f + '"' + (f===r.freq?' selected':'') + '>' + f + '</option>'; }).join('');
+    h += '<tr>';
+    h += '<td class="num">' + (i+1) + '</td>';
+    h += '<td>' + esc(r.text) + '</td>';
+    h += '<td>' + esc(r.dept) + '</td>';
+    h += '<td><select data-i="' + i + '" data-f="type" onchange="onEdit(this)">' + opts + '</select></td>';
+    h += '<td><span class="badge ' + capBadge(r.cap) + '">' + esc(r.cap) + '</span></td>';
+    h += '<td><select data-i="' + i + '" data-f="freq" onchange="onEdit(this)">' + fopts + '</select></td>';
+    h += '<td>' + (needOrchestration(r) ? '<span class="badge b-amber">是</span>' : '<span class="badge b-gray">否</span>') + '</td>';
+    h += '</tr>';
+  });
+  h += '</tbody>';
+  t.innerHTML = h;
+}
+
+function capBadge(cap){
+  if (cap.indexOf("OCR")===0) return "b-teal";
+  if (cap.indexOf("问数")===0) return "b-teal";
+  if (cap.indexOf("生成")===0) return "b-amber";
+  if (cap.indexOf("协作")===0) return "b-blue";
+  if (cap.indexOf("权限")===0) return "b-gray";
+  return "b-blue";
+}
+
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function onEdit(sel){
+  var i = parseInt(sel.getAttribute("data-i"), 10);
+  var f = sel.getAttribute("data-f");
+  state.rows[i][f] = sel.value;
+  if (f === "type") state.rows[i].cap = defaultCap(sel.value);
+  renderStats(); renderLedger();
+}
+
+function defaultCap(type){
+  for (var i=0;i<RULES.length;i++){ if (RULES[i].type === type) return RULES[i].cap; }
+  return "检索/问答";
+}
+
+function defaultDomains(){
+  return [
+    {name:"财务", density:4, closure:5, data:4, cost:4},
+    {name:"招采", density:3, closure:2, data:3, cost:2}
+  ];
+}
+
+function resetDomains(){ state.domains = defaultDomains(); renderDomains(); }
+
+function addDomain(){
+  var inp = document.getElementById("newDomain");
+  var name = inp.value.trim();
+  if (!name){ return; }
+  state.domains.push({name:name, density:3, closure:3, data:3, cost:3});
+  inp.value = "";
+  renderDomains();
+}
+
+function removeDomain(idx){ state.domains.splice(idx,1); renderDomains(); }
+
+function renderDomains(){
+  if (!state.domains.length) state.domains = defaultDomains();
+  var tb = document.getElementById("domainRows");
+  var h = "";
+  state.domains.forEach(function(d, i){
+    var total = d.density + d.closure + d.data + d.cost;
+    var advice = total >= 16 ? {t:"验内核", c:"b-teal"}
+               : total >= 12 ? {t:"验边界", c:"b-blue"}
+               : {t:"暂缓", c:"b-amber"};
+    h += '<tr>';
+    h += '<td><b>' + esc(d.name) + '</b></td>';
+    h += sel(i, "density", d.density) + sel(i, "closure", d.closure) + sel(i, "data", d.data) + sel(i, "cost", d.cost);
+    h += '<td class="num"><b>' + total + '</b> / 20</td>';
+    h += '<td><span class="badge ' + advice.c + '">' + advice.t + '</span></td>';
+    h += '<td><button class="ghost sm" onclick="removeDomain(' + i + ')">删除</button></td>';
+    h += '</tr>';
+  });
+  tb.innerHTML = h;
+  renderDomainConcl();
+}
+
+function sel(i, field, val){
+  var opts = "";
+  for (var v=1; v<=5; v++){ opts += '<option value="' + v + '"' + (v===val?' selected':'') + '>' + v + '</option>'; }
+  return '<td><select onchange="onDomainEdit(' + i + ',\'' + field + '\',this)">' + opts + '</select></td>';
+}
+
+function onDomainEdit(i, field, el){
+  state.domains[i][field] = parseInt(el.value, 10);
+  renderDomains();
+}
+
+function renderDomainConcl(){
+  var el = document.getElementById("domainConcl");
+  if (state.domains.length < 1){ el.innerHTML = ""; return; }
+  var sorted = state.domains.slice().sort(function(a,b){ return score(b)-score(a); });
+  var top = sorted[0], last = sorted[sorted.length-1];
+  var h = '<div class="concl"><strong>验证域结论</strong><ul>';
+  h += '<li><b>' + esc(top.name) + '</b> 总分 ' + score(top) + '（' + top.density + '+' + top.closure + '+' + top.data + '+' + top.cost + '）→ 作为「验内核」：需求密、流程封闭、改动便宜，适合验证核心假设。</li>';
+  if (sorted.length > 1){
+    h += '<li><b>' + esc(sorted[1].name || last.name) + '</b> 总分 ' + score(sorted[1]) + ' → 作为「验边界」：专门用来探能力边界在哪，验证完再谈推广。</li>';
+  }
+  var low = sorted.filter(function(d){ return score(d) < 12; });
+  if (low.length){
+    h += '<li>低于 12 分的域（' + low.map(function(d){return esc(d.name);}).join('、') + '）→ <b>暂缓</b>，但必须写明重新评估的触发条件，否则暂缓等于永久不做。</li>';
+  }
+  h += '</ul></div>';
+  el.innerHTML = h;
+}
+
+function score(d){ return d.density + d.closure + d.data + d.cost; }
+
+function download(filename, content, mime){
+  var blob = new Blob([content], {type: mime});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+function exportCSV(){
+  if (!state.rows.length){ alert("没有可导出的数据"); return; }
+  var lines = ["序号,需求描述,部门,类型,依赖能力,频次,需能力编排"];
+  state.rows.forEach(function(r, i){
+    lines.push([i+1, '"' + r.text.replace(/"/g,'""') + '"', r.dept, r.type, r.cap, r.freq, needOrchestration(r)?"是":"否"].join(","));
+  });
+  download("需求台账.csv", "\ufeff" + lines.join("\n"), "text/csv;charset=utf-8");
+}
+
+function exportJSON(){
+  if (!state.rows.length){ alert("没有可导出的数据"); return; }
+  var payload = {generatedAt:new Date().toISOString(), requirements:state.rows, domains:state.domains, summary:buildSummary()};
+  download("需求拆解结果.json", JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
+}
+
+function buildSummary(){
+  var n = state.rows.length;
+  var qa = state.rows.filter(function(r){return r.type==="问答型";}).length;
+  var capMap = countBy("cap");
+  var topCap = Object.keys(capMap).sort(function(a,b){return capMap[b]-capMap[a];})[0];
+  return {
+    total:n,
+    qaRatio:+(qa/n*100).toFixed(1),
+    orchestrationRatio:+((n-qa)/n*100).toFixed(1),
+    topCapability:topCap,
+    domains:state.domains.map(function(d){ return {name:d.name, total:score(d)}; })
+  };
+}
+
+function exportMD(){
+  if (!state.rows.length){ alert("没有可导出的数据"); return; }
+  var n = state.rows.length, s = buildSummary();
+  var md = "";
+  md += "# 需求拆解分析报告\n\n";
+  md += "> 生成时间：" + new Date().toLocaleString("zh-CN") + "　|　需求总数：" + n + " 条\n\n";
+  md += "## 一、核心结论\n\n";
+  md += "- 纯问答型占比 **" + s.qaRatio + "%**，需要能力编排的占比 **" + s.orchestrationRatio + "%**\n";
+  md += "- 能力依赖集中在 **" + s.topCapability + "**\n";
+  md += "- 定位判断：" + (s.orchestrationRatio > 50
+      ? "这不是「问答工具」，而是「内容底座 + 能力编排」——用户要的不是问一句，是办成一件事。"
+      : "当前以问答诉求为主，先把检索与问答做准，再评估是否引入能力编排。") + "\n\n";
+  md += "## 二、类型分布\n\n| 类型 | 数量 | 占比 |\n|---|---:|---:|\n";
+  var tm = countBy("type");
+  Object.keys(tm).sort(function(a,b){return tm[b]-tm[a];}).forEach(function(k){
+    md += "| " + k + " | " + tm[k] + " | " + (tm[k]/n*100).toFixed(1) + "% |\n";
+  });
+  md += "\n## 三、验证域结论\n\n| 候选域 | 总分 | 建议 | 说明 |\n|---|---:|---|---|\n";
+  state.domains.slice().sort(function(a,b){return score(b)-score(a);}).forEach(function(d){
+    var t = score(d);
+    var advice = t>=16 ? "验内核" : (t>=12 ? "验边界" : "暂缓");
+    md += "| " + d.name + " | " + t + "/20 | " + advice + " | 密度" + d.density + " 封闭" + d.closure + " 数据" + d.data + " 成本" + d.cost + " |\n";
+  });
+  md += "\n## 四、暂缓项与触发条件\n\n";
+  var low = state.domains.filter(function(d){return score(d)<12;});
+  if (low.length){
+    low.forEach(function(d){
+      md += "- **" + d.name + "**（" + score(d) + " 分）：暂缓。重新评估触发条件 —— 该域需求占比上升至前二，或核心域验证成功后需横向复制。\n";
+    });
+  } else {
+    md += "- 当前无低于 12 分的候选域\n";
+  }
+  md += "\n## 五、需求台账（前 20 条）\n\n| # | 需求 | 部门 | 类型 | 能力 | 频次 |\n|---|---|---|---|---|---|\n";
+  state.rows.slice(0,20).forEach(function(r,i){
+    md += "| " + (i+1) + " | " + r.text + " | " + r.dept + " | " + r.type + " | " + r.cap + " | " + r.freq + " |\n";
+  });
+  if (n > 20) md += "\n（其余 " + (n-20) + " 条见导出的 CSV）\n";
+  download("需求拆解分析报告.md", md, "text/markdown;charset=utf-8");
+}
+
+var SAMPLE = [
+  ["把上月的费用报表自动汇总成台账","财务","高"],
+  ["问报销制度里差旅住宿标准怎么定","财务","高"],
+  ["扫描件里的发票信息自动识别入库","财务","中"],
+  ["生成季度经营分析报告初稿","财务","中"],
+  ["费用报销单据自动核对预算科目","财务","高"],
+  ["找一下去年差旅费管理办法的原文","财务","中"],
+  ["月度资金计划表自动比对实际支出","财务","高"],
+  ["把各部门提交的费用表合并成一张总表","财务","中"],
+  ["供应商资质文件批量识别并归档","招采","中"],
+  ["问采购流程里比价需要几家报价","招采","高"],
+  ["比价结果自动汇总并生成对比表","招采","高"],
+  ["招标文档自动生成标准条款模板","招采","中"],
+  ["采购合同关键信息抽取成结构化台账","招采","高"],
+  ["跨部门会签一个采购申请要多久能走完","招采","中"],
+  ["把历史中标价格做成可查询的库","招采","中"],
+  ["供应商名录按品类自动分组维护","招采","低"],
+  ["员工入职材料清单怎么查","人力","中"],
+  ["简历批量解析并录入候选人台账","人力","高"],
+  ["生成月度招聘进展报告","人力","中"],
+  ["考勤异常数据自动统计并推送给主管","人力","高"],
+  ["年假余额自动核算并推送给员工核对","人力","中"],
+  ["绩效面谈记录模板自动生成","人力","低"],
+  ["合同条款合规性自动检查","法务","中"],
+  ["扫描版合同转成可检索的文本","法务","高"],
+  ["问标准合同模板在哪下载","法务","中"],
+  ["诉讼案件进度跟踪与提醒","法务","低"],
+  ["法规更新后自动比对现有模板差异","法务","中"],
+  ["会议室预订状态和冲突提醒","行政","中"],
+  ["办公资产台账自动盘点核对","行政","低"],
+  ["印章使用记录自动统计并导出台账","行政","低"],
+  ["工单进度能实时看到卡在谁那里","IT","高"],
+  ["系统权限申请与变更走线上流程","IT","中"],
+  ["故障报告自动生成并归档","IT","中"],
+  ["查一下账号密码重置怎么操作","IT","中"],
+  ["接口调用异常日志自动汇总告警","IT","高"],
+  ["各部门文档权限按角色自动配置","IT","中"],
+  ["运营活动数据看板自动更新","运营","中"],
+  ["竞品动态每日自动抓取并摘要","运营","中"],
+  ["内容发布前自动套用审核模板逐条校验","运营","低"],
+  ["批量生成各渠道的推广文案","运营","中"],
+  ["客户反馈自动分类并派给对应负责人","市场","高"]
+];
+
+window.addEventListener("DOMContentLoaded", function(){
+  state.domains = defaultDomains();
+  renderDomains();
+});
+</script>
+</body>
+</html>
