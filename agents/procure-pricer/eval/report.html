@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>采购询价 Agent · 评测报告</title>
+<style>
+  :root {
+    --blue: #1a56db; --blue-d: #1e3a8a; --blue-l: #eff6ff; --blue-b: #dbeafe;
+    --ink: #111827; --sub: #4b5563; --line: #e5e7eb; --bg: #f8fafc;
+    --ok: #047857; --ok-bg: #ecfdf5; --bad: #b91c1c; --bad-bg: #fef2f2;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.65; }
+  .wrap { max-width:1120px; margin:0 auto; padding:48px 28px 72px; }
+  header { border-left:5px solid var(--blue); padding-left:20px; margin-bottom:36px; }
+  h1 { font-size:27px; margin:0 0 8px; letter-spacing:-.3px; }
+  .meta { color:var(--sub); font-size:13px; }
+  h2 { font-size:18px; margin:38px 0 14px; padding-bottom:9px; border-bottom:2px solid var(--blue-b); }
+  .lead { color:var(--sub); margin:0 0 16px; font-size:14px; }
+  .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:20px 0 6px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:18px 16px; }
+  .card .k { font-size:12px; color:var(--sub); margin-bottom:6px; }
+  .card .v { font-size:29px; font-weight:650; color:var(--blue-d); letter-spacing:-.5px; }
+  .card .d { font-size:12px; color:var(--sub); margin-top:5px; }
+  table { width:100%; border-collapse:collapse; background:#fff; font-size:13.5px;
+    border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  th { background:var(--blue-l); color:var(--blue-d); text-align:left; padding:11px 13px;
+    font-weight:600; font-size:12.5px; border-bottom:1px solid var(--blue-b); }
+  td { padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#f9fafb; }
+  .cmp td, .cmp th { text-align:center; }
+  .cmp td:first-child, .cmp th:first-child { text-align:left; }
+  .cmp tr.hi { background:var(--blue-l); }
+  .num { text-align:center; font-variant-numeric:tabular-nums; font-weight:600; }
+  .id { color:var(--sub); font-variant-numeric:tabular-nums; width:38px; }
+  .q { max-width:280px; }
+  .diff { color:var(--sub); font-size:12.5px; max-width:250px; }
+  .tag { display:inline-block; padding:2px 9px; border-radius:20px; font-size:12px; font-weight:600;
+    white-space:nowrap; }
+  .tag.pass { background:var(--ok-bg); color:var(--ok); }
+  .tag.fail { background:var(--bad-bg); color:var(--bad); }
+  code { background:#f1f5f9; padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .note { background:#fff; border:1px solid var(--line); border-left:4px solid var(--blue);
+    border-radius:8px; padding:14px 18px; font-size:13.5px; color:var(--sub); }
+  .note b { color:var(--ink); }
+  footer { margin-top:44px; padding-top:18px; border-top:1px solid var(--line);
+    font-size:12.5px; color:var(--sub); }
+  @media(max-width:820px){ .cards{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body><div class="wrap">
+<header>
+  <h1>采购询价 Agent · 评测报告</h1>
+  <div class="meta">40 条用例 · 生成于 2026-09-04 · 数据源：脚本生成的脱敏样本库 25,920 条</div>
+</header>
+
+<section>
+  <h2>结论</h2>
+  <div class="cards">
+    <div class="card"><div class="k">action 一致率</div><div class="v">97.5%</div>
+      <div class="d">基线 7.5%</div></div>
+    <div class="card"><div class="k">空结果率</div><div class="v">7.5%</div>
+      <div class="d">基线 97.5%</div></div>
+    <div class="card"><div class="k">平均检索调用</div><div class="v">2.08</div>
+      <div class="d">上限 5 次，实测峰值 3 次</div></div>
+    <div class="card"><div class="k">门控合规率</div><div class="v">97.5%</div>
+      <div class="d">逐维比对「该查 / 不该查」</div></div>
+  </div>
+  <div class="note" style="margin-top:16px">
+    <b>基线为什么崩：</b>无门控方案对每个维度都发起召回，并用用户原话直接当过滤值。用户说「纸巾盒」，
+    库里是「纸巾盒子」，原话直传的结果就是零命中——97.5% 的查询查了个寂寞，
+    且这些失败全部静默发生，用户只会以为「库里没数据」。
+  </div>
+</section>
+
+
+    <section>
+      <h2>迭代收益</h2>
+      <p class="lead">第一轮评测暴露三个失效模式，其中两个属于解析层缺陷，修复后重测。</p>
+      <table class="cmp">
+        <thead><tr><th>轮次</th><th>action 一致率</th><th>过滤条件准确率</th><th>门控合规率</th><th>本轮修复</th></tr></thead>
+        <tbody>
+          <tr><td>v1</td><td class="num">92.5%</td>
+              <td class="num">92.5%</td>
+              <td class="num">97.5%</td><td>—</td></tr>
+          <tr class="hi"><td>v2（当前）</td><td class="num">97.5%</td>
+              <td class="num">97.5%</td>
+              <td class="num">97.5%</td>
+              <td>地区简称（沪/粤/鲁…）、<code>上个月</code> 时间解析</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+<section>
+  <h2>逐用例明细</h2>
+  <p class="lead">oracle = 用人工标注的过滤条件直接查库得到的标准答案；gated = 本方案；naive = 无门控基线。</p>
+  <table>
+    <thead><tr><th>#</th><th>问句</th><th>oracle</th><th>gated</th><th>naive</th><th>调用</th><th>偏差</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="id">1</td>
+        <td class="q">抛釉砖什么价</td>
+        <td>结果过多</td>
+        <td><span class="tag pass">结果过多</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">2</td>
+        <td class="q">纸巾盒什么价</td>
+        <td>结果过多</td>
+        <td><span class="tag pass">结果过多</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">3</td>
+        <td class="q">面盆龙头多少钱</td>
+        <td>结果过多</td>
+        <td><span class="tag pass">结果过多</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">4</td>
+        <td class="q">垃圾袋的采购价</td>
+        <td>结果过多</td>
+        <td><span class="tag pass">结果过多</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">5</td>
+        <td class="q">山东省东鹏抛釉砖的采购价</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">6</td>
+        <td class="q">全国纸巾盒价格</td>
+        <td>结果过多</td>
+        <td><span class="tag pass">结果过多</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">7</td>
+        <td class="q">广东省不锈钢合页什么价</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">8</td>
+        <td class="q">2025年低压配电箱价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">9</td>
+        <td class="q">惠达面盆龙头什么价</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">10</td>
+        <td class="q">维达擦手纸近半年的价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">3</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">11</td>
+        <td class="q">中山市工业园万邦陶瓷抛釉砖价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">12</td>
+        <td class="q">临沂市高新安泰纸业纸巾盒价格变化</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">13</td>
+        <td class="q">宁波市开发区天成电气低压配电箱什么价</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">14</td>
+        <td class="q">常州市工业园安泰五金液压铰链价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">15</td>
+        <td class="q">中山市高新金鼎电缆铜芯电力电缆近半年价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">3</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">16</td>
+        <td class="q">中山市工业园万邦陶瓷有限公司 GP75153005 的价格</td>
+        <td>无匹配</td>
+        <td><span class="tag pass">无匹配</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">17</td>
+        <td class="q">临沂市城东广厦卫浴有限公司 3*4mm² 的价格</td>
+        <td>无匹配</td>
+        <td><span class="tag pass">无匹配</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">18</td>
+        <td class="q">山东省临沂市高新安泰纸业纸巾盒价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">19</td>
+        <td class="q">查一下价格</td>
+        <td>追问条件</td>
+        <td><span class="tag pass">追问条件</span></td>
+        <td><span class="tag fail">结果过多</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">20</td>
+        <td class="q">帮我看看最近的采购情况</td>
+        <td>追问条件</td>
+        <td><span class="tag pass">追问条件</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">21</td>
+        <td class="q">山东省抛釉砖</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">22</td>
+        <td class="q">上海市静音滑轨什么价</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">23</td>
+        <td class="q">百隆执手门锁价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">24</td>
+        <td class="q">公牛阻燃交联电缆近一年价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">3</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">25</td>
+        <td class="q">施耐德动力配电箱 2024 年价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">26</td>
+        <td class="q">佛山市高新华远陶瓷股份有限公司抛釉砖价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">27</td>
+        <td class="q">复印纸 A4-70g 什么价</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">28</td>
+        <td class="q">南安市明水宏发卫浴面盆龙头价格趋势</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">29</td>
+        <td class="q">全国淋浴花洒价格</td>
+        <td>结果过多</td>
+        <td><span class="tag pass">结果过多</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">30</td>
+        <td class="q">西藏自治区垃圾袋价格</td>
+        <td>无匹配</td>
+        <td><span class="tag pass">无匹配</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">31</td>
+        <td class="q">瓷砖什么价</td>
+        <td>追问条件</td>
+        <td><span class="tag pass">追问条件</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">32</td>
+        <td class="q">马桶多少钱</td>
+        <td>追问条件</td>
+        <td><span class="tag pass">追问条件</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">33</td>
+        <td class="q">万邦陶瓷抛釉砖价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">34</td>
+        <td class="q">上个月广东省垃圾袋价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">35</td>
+        <td class="q">沪市静音滑轨价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">36</td>
+        <td class="q">中山市高新金鼎电缆的铜芯电力电缆和铝合金电缆价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">37</td>
+        <td class="q">抛柚砖什么价</td>
+        <td>结果过多</td>
+        <td><span class="tag fail">追问条件</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">category: 期望 抛釉砖 / 实得 None</td>
+      </tr>
+      <tr>
+        <td class="id">38</td>
+        <td class="q">帮我看看广东省价格</td>
+        <td>结果过多</td>
+        <td><span class="tag pass">结果过多</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">39</td>
+        <td class="q">800*800mm 抛釉砖价格</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+      <tr>
+        <td class="id">40</td>
+        <td class="q">2024年到2026年维达擦手纸价格趋势</td>
+        <td>返回结果</td>
+        <td><span class="tag pass">返回结果</span></td>
+        <td><span class="tag fail">无匹配</span></td>
+        <td class="num">2</td>
+        <td class="diff">—</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>残留缺口</h2>
+  <div class="note">
+    <b>错别字导致召回失败</b>（用例 37：<code>抛柚砖</code>）：分类召回为 0，Agent 退化为追问。
+    这不属于解析层缺陷——「抛柚砖→抛釉砖」需要知识库维护别名表，靠改提示词或调阈值都解决不了。
+    区分「模型问题 / 解析问题 / 数据问题」是本项目的一条方法论：三层问题的处置方式完全不同，
+    混在一起处理的结局就是不停堆提示词。
+  </div>
+</section>
+
+<footer>
+  报告由 <code>eval/build_report.py</code> 从 <code>eval/results.json</code> 生成，
+  重跑 <code>python eval/run_eval.py && python eval/build_report.py</code> 即可复现。
+  数据全部为脚本生成的虚构样本，不含任何真实企业数据。
+</footer>
+</div></body></html>
