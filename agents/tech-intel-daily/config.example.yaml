@@ -8,7 +8,7 @@ general:
 
 proxy:
   enabled: false
-  url: http://127.0.0.1:7897
+  url: http://127.0.0.1:<PORT>
   auto_check: true
   check_timeout: 10
 
