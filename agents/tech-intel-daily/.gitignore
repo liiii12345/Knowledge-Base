@@ -1,7 +1,6 @@
-# 你自己的信源清单、运行产物不入库
-sources.yaml
+# 私有配置与运行产物不入库
+config.yaml
 data/
-output/
 __pycache__/
 *.pyc
 .env
