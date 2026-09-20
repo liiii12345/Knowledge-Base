@@ -1,0 +1,40 @@
+{"id":1,"query":"抛釉砖什么价","expect":{"category":"抛釉砖"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"TOO_MANY"}
+{"id":2,"query":"纸巾盒什么价","expect":{"category":"纸巾盒子"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"TOO_MANY"}
+{"id":3,"query":"面盆龙头多少钱","expect":{"category":"面盆龙头"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":4,"query":"垃圾袋的采购价","expect":{"category":"垃圾袋"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"TOO_MANY"}
+{"id":5,"query":"山东省东鹏抛釉砖的采购价","expect":{"category":"抛釉砖","brand":"东鹏","region":"山东省"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":6,"query":"全国纸巾盒价格","expect":{"category":"纸巾盒子","region":null},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"TOO_MANY"}
+{"id":7,"query":"广东省不锈钢合页什么价","expect":{"category":"不锈钢合页","region":"广东省"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":8,"query":"2025年低压配电箱价格","expect":{"category":"低压配电箱","date_start":"2025-01-01","date_end":"2025-12-31"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":9,"query":"惠达面盆龙头什么价","expect":{"category":"面盆龙头","brand":"惠达"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":10,"query":"维达擦手纸近半年的价格","expect":{"category":"擦手纸","brand":"维达"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":11,"query":"中山市工业园万邦陶瓷抛釉砖价格","expect":{"category":"抛釉砖","supplier_name":"中山市工业园万邦陶瓷有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":12,"query":"临沂市高新安泰纸业纸巾盒价格变化","expect":{"category":"纸巾盒子","supplier_name":"临沂市高新安泰纸业集团有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":13,"query":"宁波市开发区天成电气低压配电箱什么价","expect":{"category":"低压配电箱","supplier_name":"宁波市开发区天成电气股份有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":14,"query":"常州市工业园安泰五金液压铰链价格","expect":{"category":"液压铰链","supplier_name":"常州市工业园安泰五金有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":15,"query":"中山市高新金鼎电缆铜芯电力电缆近半年价格","expect":{"category":"铜芯电力电缆","supplier_name":"中山市高新金鼎电缆集团有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":16,"query":"中山市工业园万邦陶瓷有限公司 GP75153005 的价格","expect":{"supplier_name":"中山市工业园万邦陶瓷有限公司","spec":"GP75153005"},"expect_gate":{"supplier":"C"},"expect_action":"EMPTY"}
+{"id":17,"query":"临沂市城东广厦卫浴有限公司 3*4mm² 的价格","expect":{"supplier_name":"临沂市城东广厦卫浴有限公司","spec":"3*4mm²"},"expect_gate":{"supplier":"C"},"expect_action":"EMPTY"}
+{"id":18,"query":"山东省临沂市高新安泰纸业纸巾盒价格","expect":{"category":"纸巾盒子","supplier_name":"临沂市高新安泰纸业集团有限公司","region":"山东省"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":19,"query":"查一下价格","expect_action":"ASK"}
+{"id":20,"query":"帮我看看最近的采购情况","expect_action":"ASK"}
+{"id":21,"query":"山东省抛釉砖","expect":{"category":"抛釉砖","region":"山东省"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":22,"query":"上海市静音滑轨什么价","expect":{"category":"静音滑轨","region":"上海市"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":23,"query":"百隆执手门锁价格","expect":{"category":"执手门锁","brand":"百隆"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":24,"query":"公牛阻燃交联电缆近一年价格","expect":{"category":"阻燃交联电缆","brand":"公牛"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":25,"query":"施耐德动力配电箱 2024 年价格","expect":{"category":"动力配电箱","brand":"施耐德"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":26,"query":"佛山市高新华远陶瓷股份有限公司抛釉砖价格","expect":{"category":"抛釉砖","supplier_name":"佛山市高新华远陶瓷股份有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":27,"query":"复印纸 A4-70g 什么价","expect":{"category":"复印纸","spec":"A4-70g"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":28,"query":"南安市明水宏发卫浴面盆龙头价格趋势","expect":{"category":"面盆龙头","supplier_name":"南安市明水宏发卫浴股份有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":29,"query":"全国淋浴花洒价格","expect":{"category":"淋浴花洒","region":null},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"TOO_MANY"}
+{"id":30,"query":"西藏自治区垃圾袋价格","expect":{"category":"垃圾袋","region":"西藏自治区"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":31,"query":"瓷砖什么价","expect":{},"expect_gate":{"category":"A","supplier":"A"},"expect_action":"ASK"}
+{"id":32,"query":"马桶多少钱","expect":{},"expect_gate":{"category":"A","supplier":"A"},"expect_action":"ASK"}
+{"id":33,"query":"万邦陶瓷抛釉砖价格","expect":{"category":"抛釉砖","supplier_name":"中山市工业园万邦陶瓷有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":34,"query":"上个月广东省垃圾袋价格","expect":{"category":"垃圾袋","region":"广东省","date_start":"2026-07-01","date_end":"2026-07-31"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":35,"query":"沪市静音滑轨价格","expect":{"category":"静音滑轨","region":"上海市"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":36,"query":"中山市高新金鼎电缆的铜芯电力电缆和铝合金电缆价格","expect":{"category":"铜芯电力电缆","supplier_name":"中山市高新金鼎电缆集团有限公司"},"expect_gate":{"category":"C","supplier":"C"},"expect_action":"LIST"}
+{"id":37,"query":"抛柚砖什么价","expect":{"category":"抛釉砖"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"TOO_MANY"}
+{"id":38,"query":"帮我看看广东省价格","expect":{"region":"广东省"},"expect_gate":{"category":"A","supplier":"A"},"expect_action":"TOO_MANY"}
+{"id":39,"query":"800*800mm 抛釉砖价格","expect":{"category":"抛釉砖","spec":"800*800mm"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
+{"id":40,"query":"2024年到2026年维达擦手纸价格趋势","expect":{"category":"擦手纸","brand":"维达","date_start":"2024-01-01","date_end":"2026-12-31"},"expect_gate":{"category":"C","supplier":"A"},"expect_action":"LIST"}
