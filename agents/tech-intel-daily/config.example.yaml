@@ -47,15 +47,72 @@ twitter:
     - name: Swyx
       handle: "@swyx"
       domain: AI Engineer 社区
+    - name: Josh Woodward
+      handle: "@joshwoodward"
+      domain: Google Labs / AI 应用
+    - name: Kevin Weil
+      handle: "@kevinweil"
+      domain: Google Labs 产品
     - name: Sam Altman
       handle: "@sama"
       domain: OpenAI
-    - name: Guillermo Rauch
-      handle: "@rauchg"
-      domain: Vercel / 前端基建
+    - name: Amanda Askell
+      handle: "@AmandaAskell"
+      domain: Anthropic 对齐研究
+    - name: Peter Yang
+      handle: "@petergyang"
+      domain: Creator Economy
+    - name: Nan Yu
+      handle: "@_nan_yu"
+      domain: AI 产品
+    - name: Madhu Guru
+      handle: "@madhuguru"
+      domain: AI 工程
+    - name: Cat Wu
+      handle: "@catwu"
+      domain: AI 研究
+    - name: Thariq
+      handle: "@thariq"
+      domain: AI 投资
+    - name: Google Labs
+      handle: "@GoogleLabs"
+      domain: Google AI 研究
     - name: Amjad Masad
       handle: "@amasad"
       domain: Replit / Agent 产品
+    - name: Guillermo Rauch
+      handle: "@rauchg"
+      domain: Vercel / 前端基建
+    - name: Alex Albert
+      handle: "@alexalbert"
+      domain: Anthropic 开发者
+    - name: Aaron Levie
+      handle: "@levie"
+      domain: Box / 企业软件
+    - name: Ryo Lu
+      handle: "@ryolu"
+      domain: AI 产品
+    - name: Garry Tan
+      handle: "@garrytan"
+      domain: YC / 早期投资
+    - name: Matt Turck
+      handle: "@mattturck"
+      domain: 数据 / 投资
+    - name: Nikunj Kothari
+      handle: "@nikunjkothari"
+      domain: AI 创业
+    - name: Peter Steinberger
+      handle: "@steipete"
+      domain: 开发者工具
+    - name: Dan Shipper
+      handle: "@danshipper"
+      domain: AI 写作
+    - name: Aditya Agarwal
+      handle: "@adityaagarwal"
+      domain: 工程管理
+    - name: Claude AI
+      handle: "@claudeai"
+      domain: Anthropic 官方
 
 analysis:
   model: gpt-4o-mini
