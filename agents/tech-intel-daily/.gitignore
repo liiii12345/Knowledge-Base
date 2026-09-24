@@ -1,6 +1,0 @@
-# 私有配置与运行产物不入库
-config.yaml
-data/
-__pycache__/
-*.pyc
-.env
