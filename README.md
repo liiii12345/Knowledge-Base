@@ -14,7 +14,7 @@
 | 内容 | 性质 |
 |---|---|
 | 11 个板块结构、5 条质量红线、8 类故障的解法 | **真实**：来自项目运行记录 |
-| 信源清单（5 个 YouTube 频道 + 23 个 X 账号，共 28 源） | **真实**：均为公开账号，见 [config.example.yaml](agents/tech-intel-daily/config.example.yaml) |
+| 信源清单（5 个 YouTube 频道 + 23 个 X 个人账号 + 1 个官方账号） | **真实**：均为公开账号，见 [config.example.yaml](agents/tech-intel-daily/config.example.yaml) |
 | 全部 Python 代码（采集 / 红线 / 生成 / 发布） | **真实可运行**：零第三方依赖，`--demo` 离线跑通，10 个单元测试通过 |
 | demo 产出的日报与 `examples/sample-report.md` | **虚构**：频道名、账号名、链接全是占位符，仅演示结构 |
 | 飞书 token / 群 ID / 文档 ID | **占位符**：一律 `<YOUR_XXX>` |
@@ -79,7 +79,7 @@ python -m scripts.run_daily --demo       # 离线跑通 5 步，输出 11 板块
 
 ## 已知局限（不遮掩）
 
-- **真实采集链路没在本机验证过**：能验证的是 `--demo` 全流程与单元测试；28 源的实时可用性依赖 YouTube 页面结构与 Nitter 镜像，两者都会随外部改版失效
+- **真实采集链路没在本机验证过**：能验证的是 `--demo` 全流程与单元测试；29 个源的实时可用性依赖 YouTube 页面结构与 Nitter 镜像，两者都会随外部改版失效
 - 表格块在飞书转换中降级为等宽文本；跨天事件聚类未实现
 
 ## 联系
