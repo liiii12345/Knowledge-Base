@@ -11,6 +11,10 @@ Thumbs.db
 *.key
 *.pem
 
+# 本项目的私有配置与运行产物
+config.yaml
+data/
+
 # 编程临时产物（如后续放代码）
 node_modules/
 __pycache__/
