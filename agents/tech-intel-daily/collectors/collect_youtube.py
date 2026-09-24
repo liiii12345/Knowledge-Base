@@ -47,7 +47,8 @@ def parse_age_hours(text: str):
 
 
 def fetch_channel_page(handle: str, proxy: str = "", timeout: int = 20) -> str:
-    url = f"https://www.youtube.com/{handle.lstrip('@') and ('@' + handle.lstrip('@'))}/videos"
+    # handle 可能写作 "@X" 或 "X"，统一成 "@X" 再拼 videos Tab
+    url = f"https://www.youtube.com/@{handle.lstrip('@')}/videos"
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
     opener = urllib.request.build_opener()
     if proxy:
