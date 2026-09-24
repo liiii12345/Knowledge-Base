@@ -82,42 +82,46 @@ def check_proxy(url: str, timeout: int = 10) -> bool:
 
 
 def demo_items(date_str: str):
-    """离线样例数据：内容与线上采集产出的字段结构完全一致，可跑通整条流水线。
+    """离线样例数据：字段结构与线上采集产出完全一致，用于跑通整条流水线。
 
-    全部为虚构内容（含一条故意不达标的短摘要，用于验证质量红线生效）。
+    重要：样例中的频道名、账号名、链接**全部虚构**，不使用任何真实人物或真实 URL。
+    理由：demo 跑出来的日报会被当成样例展示，如果把虚构内容挂在真人名字下，
+    等于批量生产假引用。演示归演示，不能拿真人的名义编话。
+
+    其中一条摘要故意写短（<30 汉字），用于验证质量红线 R1 确实会拦截。
     """
     yt = [
-        {"platform": "youtube", "channel": "Latent Space", "author": "Latent Space",
-         "title": "Building Evaluation Pipelines for LLM Products",
-         "link": "https://www.youtube.com/watch?v=demo01", "focus": "AI 工程实践",
+        {"platform": "youtube", "channel": "示例播客频道 A", "author": "示例播客频道 A",
+         "title": "从零搭建大模型评测流水线（示例）",
+         "link": "https://example.com/watch?v=demo01", "focus": "AI 工程实践",
          "duration": "1:12:30", "age_text": "6 小时前", "age_hours": 6.0,
          "summary": "与某 AI 产品负责人对谈，主题是从零搭建大模型评测流水线，覆盖数据集构造、回归测试与线上监控三部分。"},
-        {"platform": "youtube", "channel": "No Priors", "author": "No Priors",
-         "title": "Why Agents Are Still Hard in Production",
-         "link": "https://www.youtube.com/watch?v=demo02", "focus": "AI 创业 / 行业趋势",
+        {"platform": "youtube", "channel": "示例播客频道 B", "author": "示例播客频道 B",
+         "title": "生产环境里的 Agent 为什么难做（示例）",
+         "link": "https://example.com/watch?v=demo02", "focus": "AI 创业 / 行业趋势",
          "duration": "58:12", "age_text": "1 天前", "age_hours": 22.0,
-         "summary": "两位创业者讨论 Agent 落地难的三个原因：上下文管理、工具可靠性、以及缺乏回滚机制。"},
+         "summary": "两位从业者讨论 Agent 落地难的三个原因：上下文管理、工具可靠性、以及缺乏回滚机制。"},
     ]
     tw = [
-        {"platform": "twitter", "author": "Andrej Karpathy", "handle": "@karpathy", "domain": "AI 教育",
-         "title": "评测基准污染比想象中严重", "link": "https://x.com/karpathy/status/demo11",
+        {"platform": "twitter", "author": "示例研究员甲", "handle": "@example_researcher", "domain": "模型评测",
+         "title": "评测基准污染比想象中严重（示例）", "link": "https://example.com/status/demo11",
          "summary": "多个主流基准的测试集已进入训练语料，建议团队自建私有评测集并定期重跑基线。",
          "age_hours": 3.0},
-        {"platform": "twitter", "author": "Guillermo Rauch", "handle": "@rauchg", "domain": "Vercel",
-         "title": "新的边缘运行时把冷启动降到 40ms", "link": "https://x.com/rauchg/status/demo12",
-         "summary": "官方宣布新的边缘运行时完成优化，冷启动时间从原来的一百八十毫秒下降到四十毫秒，目前已经在生产环境对三成流量灰度验证，下周一全量放开。",
+        {"platform": "twitter", "author": "示例工程师乙", "handle": "@example_engineer", "domain": "运行时 / 基建",
+         "title": "边缘运行时冷启动降到 40ms（示例）", "link": "https://example.com/status/demo12",
+         "summary": "示例团队宣布新的边缘运行时完成优化，冷启动时间从原来的一百八十毫秒下降到四十毫秒，目前已经在生产环境对三成流量灰度验证，下周全量放开。",
          "age_hours": 5.0},
-        {"platform": "twitter", "author": "Swyx", "handle": "@swyx", "domain": "AI Engineer 社区",
-         "title": "社区征文：聊聊你的 Agent 失败案例", "link": "https://x.com/swyx/status/demo13",
-         "summary": "社区正在征集生产环境中 Agent 的真实失败复盘，包括上下文溢出、工具误调用和成本失控三类典型问题，入选稿件会在社区周会上做公开分享并结集出版。",
+        {"platform": "twitter", "author": "示例社区运营丙", "handle": "@example_community", "domain": "开发者社区",
+         "title": "社区征文：聊聊你的 Agent 失败案例（示例）", "link": "https://example.com/status/demo13",
+         "summary": "示例社区正在征集生产环境中 Agent 的真实失败复盘，包括上下文溢出、工具误调用和成本失控三类典型问题，入选稿件会在社区周会上做公开分享并结集出版。",
          "age_hours": 8.0},
-        {"platform": "twitter", "author": "Amjad Masad", "handle": "@amasad", "domain": "Agent 产品",
-         "title": "Agent 沙箱默认只读", "link": "https://x.com/amasad/status/demo14",
+        {"platform": "twitter", "author": "示例产品负责人丁", "handle": "@example_pm", "domain": "Agent 产品",
+         "title": "Agent 沙箱默认改为只读（示例）", "link": "https://example.com/status/demo14",
          "summary": "沙箱执行环境改为默认只读挂载，写操作需显式授权，减少误删文件的线上事故。",
          "age_hours": 11.0},
-        {"platform": "twitter", "author": "Sam Altman", "handle": "@sama", "domain": "OpenAI",
-         "title": "这不是需求鲜明。", "link": "https://x.com/sama/status/demo15",
-         "summary": "这条信息不足 30 字，用于验证质量红线能否把它拦下来。",
+        {"platform": "twitter", "author": "示例账号戊", "handle": "@example_short", "domain": "其他",
+         "title": "这条摘要故意不达标（示例）", "link": "https://example.com/status/demo15",
+         "summary": "摘要太短，用于验证红线。",
          "age_hours": 2.0},
     ]
     return {"youtube": yt, "twitter": tw}
